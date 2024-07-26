@@ -2,7 +2,9 @@ const jwt = require('jsonwebtoken')
 const configs = require('../utils/configs')
 
 const auth = (req, res, next) => {
+  console.log('is auth in')
   const token = req.header('x-access-token')
+  console.log(token, 'token')
   if (!token) {
     return res.status(401).json({ status: 4010, msg: 'No token' })
   }

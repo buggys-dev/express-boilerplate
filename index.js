@@ -42,10 +42,13 @@ console.log('SERVER ENV:', environment)
 
 const sellerRouter = require('./src/routes/sellers')
 const indexRouter = require('./src/routes/index')
+const adminRouter = require('./src/routes/admin')
+const client = require('./src/utils/mongodb')
 
 // router 설정
 app.use('/', indexRouter)
 app.use('/sellers', sellerRouter)
+app.use('/admin', adminRouter)
 
 // Fallthrough error handler
 app.use((err, req, res, next) => {
@@ -61,6 +64,11 @@ app.use((err, req, res, next) => {
 })
 
 const PORT = configs.port
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`)
+console.log(`Listening on port ${PORT}! 2`)
+const ACCESS_TOKEN_SECRET = configs.accessTokenSecret
+console.log(`ACCESS_TOKEN_SECRET: ${ACCESS_TOKEN_SECRET}`)
+
+client.runAfterAllConnected(() => {
+  console.log(`Listening on port ${configs.port}!`)
+  app.listen(configs.port)
 })
