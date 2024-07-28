@@ -1,27 +1,23 @@
 require('dotenv').config()
 
 const configs = {
-  environment: 'dev',
-  accessTokenSecret: null,
-  dbPassword: null,
-  dbUserName: null,
-  dbUri: null,
   port: null,
-  dbConnectionPoolSize: 1000,
+  dbUserName: null,
+  dbPassword: null,
+  dbName: null,
+  dbConnectionPoolSize: 10,
+  blogAccountPassword: null,
+  gptOrganization: null,
+  gptProject: null,
+  gptApiKey: null,
 }
 
-if (process.env.NODE_ENV === 'production') {
-  configs.port = process.env.PORT_PRODUCTION
-  configs.environment = 'production'
-  configs.dbPassword = process.env.DB_PASSWORD
-  configs.dbUserName = process.env.DB_USER_NAME
-  configs.dbUri = `mongodb+srv://${configs.dbUserName}:${configs.dbPassword}@cluster0.5ykvdev.mongodb.net?retryWrites=true`
-}
-if (process.env.NODE_ENV === 'development') {
-  configs.port = process.env.PORT_DEVELOPMENT
-  configs.environment = 'development'
-}
-
-configs.accessTokenSecret = process.env.ACCESS_TOKEN_SECRET
+configs.dbName = process.env.DB_NAME
+configs.dbUserName = process.env.DB_USER_NAME
+configs.dbPassword = process.env.DB_PASSWORD
+configs.dbConnectionPoolSize = process.env.DB_CONNECTION_POOL_SIZE
+configs.port = process.env.PORT_PRODUCTION
+configs.cluster0Uri = `mongodb+srv://${configs.dbUserName}:${configs.dbPassword}@cluster0.5ykvdev.mongodb.net/${configs.dbName}?retryWrites=true`
+configs.blogAccountPassword = process.env.BLOG_ACCOUNT_PASSWORD
 
 module.exports = configs

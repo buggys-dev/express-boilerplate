@@ -1,5 +1,5 @@
 const { MongoClient } = require('mongodb')
-const configs = require('../configs')
+const configs = require('./configs')
 
 class Client {
   constructor(dbConfigs) {
@@ -9,7 +9,7 @@ class Client {
 
     try {
       for (const [clusterAlias, clusterConfig] of Object.entries(dbConfigs)) {
-        console.log(
+        console.debug(
           `Connecting to DB '${clusterAlias}' with uri: ${clusterConfig.uri}`,
         )
 
@@ -61,7 +61,7 @@ class Client {
   reconnectDB() {
     for (const [clusterAlias, client] of Object.entries(this.clients)) {
       if (!client.topology) {
-        console.log(`Reconnect ${clusterAlias} DB`)
+        console.debug(`Reconnect ${clusterAlias} DB`)
         this._register(
           client,
           clusterAlias,
@@ -84,6 +84,18 @@ class Client {
     return true
   }
 
+  _getDb(clusterAlias) {
+    const client = this.clients[clusterAlias]
+
+    if (!client) {
+      const err = new Error(`DB '${clusterAlias}' is not connected`)
+
+      throw err
+    }
+
+    return client.db()
+  }
+
   runAfterAllConnected(cb, onlyRequired = true) {
     const promises = Object.values(this.connectPromiseEntries)
       .filter((entry) => !onlyRequired || entry.required)
@@ -94,31 +106,16 @@ class Client {
     })
   }
 
-  _getDb(clusterAlias) {
-    const client = this.clients[clusterAlias]
-
-    if (!client) {
-      console.log(`DB '${clusterAlias}' is not connected.`)
-
-      const err = new Error(`DB '${clusterAlias}' is not connected`)
-
-      throw err
-    }
-
-    return client.db()
-  }
-
-  get mainDb() {
-    return this._getDb('main')
+  get cluster0() {
+    return this._getDb('cluster0')
   }
 }
 
 const dbConfigs = {
-  main: {
-    uri: encodeURI(configs.dbUri),
+  cluster0: {
+    uri: encodeURI(configs.cluster0Uri),
     options: {
       maxPoolSize: configs.dbConnectionPoolSize,
-      maxIdleTimeMS: 30000,
     },
   },
 }
@@ -126,7 +123,7 @@ const dbConfigs = {
 const client = new Client(dbConfigs)
 
 client.runAfterAllConnected((names) => {
-  console.log(`Required DBs are connected: [${names}]`)
+  console.debug(`Required DBs are connected: [${names}]`)
 }, true)
 
 module.exports = client
