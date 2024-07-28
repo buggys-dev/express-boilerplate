@@ -63,11 +63,6 @@ app.use((err, req, res, next) => {
   res.status(500).send(`Uncatched error: Check Sentry ${res.sentry}\n`)
 })
 
-const PORT = configs.port
-console.log(`Listening on port ${PORT}! 2`)
-const ACCESS_TOKEN_SECRET = configs.accessTokenSecret
-console.log(`ACCESS_TOKEN_SECRET: ${ACCESS_TOKEN_SECRET}`)
-
 client.runAfterAllConnected(() => {
   console.log(`Listening on port ${configs.port}!`)
   app.listen(configs.port)
