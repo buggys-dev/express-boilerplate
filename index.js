@@ -40,15 +40,11 @@ app.use(express.static(path.join(__dirname, 'public')))
 const environment = configs.environment
 console.log('SERVER ENV:', environment)
 
-const sellerRouter = require('./src/routes/sellers')
 const indexRouter = require('./src/routes/index')
-const adminRouter = require('./src/routes/admin')
 const client = require('./src/utils/mongodb')
 
 // router 설정
 app.use('/', indexRouter)
-app.use('/sellers', sellerRouter)
-app.use('/admin', adminRouter)
 
 // Fallthrough error handler
 app.use((err, req, res, next) => {
