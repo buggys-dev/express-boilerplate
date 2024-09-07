@@ -61,7 +61,7 @@ class BaseRepo {
   }
 
   async find({ filter = {}, projection = null, sort = null, limit = null }) {
-    let result = await this.collection.find(filter, projection)
+    let result = await this.collection.find(filter, { projection })
     if (sort) {
       result = result.sort(sort)
     }
